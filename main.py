@@ -33,10 +33,12 @@ async def upload_event(request: Request):
 def get_events():
     return events
 
-@app.get("/reset")
+# ✅ Add this reset route
+@app.post("/reset")
 def reset_events():
-    events.clear()
-    return {"status": "cleared"}
+    global events
+    events = []
+    return {"status": "reset", "count": 0}
 
 import requests
 from fastapi import APIRouter
