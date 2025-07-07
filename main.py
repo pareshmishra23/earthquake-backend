@@ -37,3 +37,28 @@ def get_events():
 def reset_events():
     events.clear()
     return {"status": "cleared"}
+
+import requests
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get("/external-events")
+def get_usgs_earthquakes():
+    url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
+    r = requests.get(url)
+    data = r.json()
+
+    results = []
+    for feature in data.get("features", []):
+        props = feature["properties"]
+        coords = feature["geometry"]["coordinates"]
+        results.append({
+            "lat": coords[1],
+            "lon": coords[0],
+            "label": f"M{props['mag']} - {props['place']}",
+            "timestamp": props["time"]
+        })
+
+    return results
+
