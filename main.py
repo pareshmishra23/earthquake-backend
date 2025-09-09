@@ -12,6 +12,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# for upload 
 @app.post("/upload")
 async def upload_event(request: Request):
     data = await request.json()
